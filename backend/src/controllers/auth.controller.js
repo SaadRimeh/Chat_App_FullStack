@@ -59,7 +59,7 @@ res.status(201).json({
 
 });
 
-//todo: send welcome email to new user
+//todo: send welcome email to new users
 }
 else{
     return res.status(400).json({message: "Invalid user data"});
