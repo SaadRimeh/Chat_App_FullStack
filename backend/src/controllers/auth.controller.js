@@ -49,8 +49,13 @@ const newUser = new User({
 
 //generate token and save user
 if(newUser){
-generateToken(newUser._id, res);
-await newUser.save();
+
+//save user and generate token
+const savedUser=await newUser.save();
+generateToken(savedUser._id, res);
+
+
+//return user data
 res.status(201).json({
     _id: newUser._id,
     fullName: newUser.fullName,
