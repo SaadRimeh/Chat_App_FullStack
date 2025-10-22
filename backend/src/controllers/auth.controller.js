@@ -1,7 +1,10 @@
 import { generateToken } from '../lib/utils.js';
 import User from '../models/User.js';
 import bcrypt from 'bcryptjs';
+import { sendWelcomeEmail } from '../emails/emailHandlers.js';
+import dotenv from 'dotenv';
 
+dotenv.config();
 
 
 
@@ -64,9 +67,16 @@ res.status(201).json({
 
 });
 
-//todo: send welcome email to new users
+try{
+await sendWelcomeEmail(savedUser.email, savedUser.fullName, process.env.CLIENT_URL);
+
+}catch(error){
+console.error("Error sending welcome email:", error);
 }
-else{
+
+
+
+}else{
     return res.status(400).json({message: "Invalid user data"});
 }
 }
