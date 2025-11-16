@@ -1,23 +1,36 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import path from 'path';
 import authRoutes from './routes/auth.route.js';
 import messagesRoutes from './routes/message.route.js';
 import { connectDB } from './lib/db.js';
 
-
 dotenv.config();
+
 const app = express();
 // Get the absolute path of the current directory
 const __dirname = path.resolve();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+
+// Configure CORS for development and production
+const clientOrigin = process.env.CLIENT_URL || 'http://localhost:5173';
+if (process.env.NODE_ENV === 'production') {
+   // In production the frontend is served by this server, allow same-origin requests
+   app.use(cors({ origin: true, credentials: true }));
+} else {
+   // During local development allow Vite dev server
+   app.use(cors({ origin: clientOrigin, credentials: true }));
+}
+
+// Parse cookies (required for auth middleware)
 app.use(cookieParser());
 
-app.use("/api/auth", authRoutes);
-app.use("/api/messages", messagesRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/messages', messagesRoutes);
 
 //make ready for deployment
 // If the app is running in production mode
