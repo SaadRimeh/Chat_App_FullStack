@@ -39,4 +39,4 @@ function App() {
   )
 }
 //#4f4f4f2e_1px
-export default App
+export default App;
