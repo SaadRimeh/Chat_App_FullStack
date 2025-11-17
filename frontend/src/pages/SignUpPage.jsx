@@ -24,17 +24,8 @@ function SignUpPage() {
     setFocusedField(null);
   };
 
-  // Easier password strength - only check length
-  const getPasswordStrength = () => {
-    if (!formData.password) return 0;
-    if (formData.password.length >= 12) return 100;
-    if (formData.password.length >= 8) return 75;
-    if (formData.password.length >= 6) return 50;
-    if (formData.password.length >= 4) return 25;
-    return 0;
-  };
+ 
 
-  const passwordStrength = getPasswordStrength();
 
   return (
     <div className="w-full flex items-center justify-center p-4 bg-slate-900">
@@ -49,11 +40,11 @@ function SignUpPage() {
           <div className="w-full flex flex-col md:flex-row bg-slate-900/80 backdrop-blur-sm rounded-2xl overflow-hidden">
             {/* FORM COLUMN - LEFT SIDE */}
             <div className="md:w-1/2 p-8 flex items-center justify-center md:border-r border-slate-600/30 relative">
-              {/* Simple top badge */}
+               {/* Security Badge */}
               <div className="absolute top-6 left-6">
-                <div className="flex items-center gap-2 px-3 py-1 bg-cyan-500/10 border border-cyan-500/20 rounded-full">
-                  <ShieldIcon className="w-4 h-4 text-cyan-400" />
-                  <span className="text-sm font-medium text-cyan-400">Secure Signup</span>
+                <div className="flex items-center gap-2 px-3 py-1 bg-green-500/10 border border-green-500/20 rounded-full">
+                  <ShieldIcon className="w-4 h-4 text-green-400" />
+                  <span className="text-sm font-medium text-green-400">Secure signup</span>
                 </div>
               </div>
               
@@ -79,16 +70,18 @@ function SignUpPage() {
                       Full Name
                     </label>
                     <div className="relative transition-all duration-300 transform group-hover:scale-[1.02]">
+ <div className={`absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-xl blur-md scale-105 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${focusedField === 'fullName' ? 'opacity-100' : ''}`}></div>
+
                       <input
                         type="text"
                         value={formData.fullName}
                         onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                         onFocus={() => handleInputFocus('fullName')}
                         onBlur={handleInputBlur}
-                        className={`input pl-12 transition-all duration-300 ${
+                       className={`input pl-12 pr-12 transition-all duration-500 relative z-10 ${
                           focusedField === 'fullName' 
-                            ? 'border-cyan-400/50 shadow-lg shadow-cyan-400/10' 
-                            : 'border-slate-600/30'
+                            ? 'border-cyan-400/70 shadow-2xl shadow-cyan-400/20 bg-slate-800/50' 
+                            : 'border-slate-600/30 bg-slate-800/30'
                         }`}
                         placeholder=" Saad Rimeh"
                       />
@@ -101,19 +94,22 @@ function SignUpPage() {
                   {/* EMAIL INPUT */}
                   <div className="group">
                     <label className="auth-input-label flex items-center gap-2">
+
                       Email Address
                     </label>
                     <div className="relative transition-all duration-300 transform group-hover:scale-[1.02]">
+                       <div className={`absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-xl blur-md scale-105 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${focusedField === 'email' ? 'opacity-100' : ''}`}></div>
+
                       <input
                         type="email"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         onFocus={() => handleInputFocus('email')}
                         onBlur={handleInputBlur}
-                        className={`input pl-12 transition-all duration-300 ${
+                       className={`input pl-12 pr-12 transition-all duration-500 relative z-10 ${
                           focusedField === 'email' 
-                            ? 'border-cyan-400/50 shadow-lg shadow-cyan-400/10' 
-                            : 'border-slate-600/30'
+                            ? 'border-cyan-400/70 shadow-2xl shadow-cyan-400/20 bg-slate-800/50' 
+                            : 'border-slate-600/30 bg-slate-800/30'
                         }`}
                         placeholder=" example@gmail.com"
                       />
@@ -126,20 +122,21 @@ function SignUpPage() {
                   {/* PASSWORD INPUT */}
                   <div className="group">
                     <label className="auth-input-label flex items-center gap-2">
-                     
                       Password
                     </label>
                     <div className="relative transition-all duration-300 transform group-hover:scale-[1.02]">
+                       <div className={`absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-xl blur-md scale-105 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${focusedField === 'password' ? 'opacity-100' : ''}`}></div>
+
                       <input
                         type={showPassword ? "text" : "password"}
                         value={formData.password}
                         onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                         onFocus={() => handleInputFocus('password')}
                         onBlur={handleInputBlur}
-                        className={`input pl-12 pr-12 transition-all duration-300 ${
+                        className={`input pl-12 pr-12 transition-all duration-500 relative z-10 ${
                           focusedField === 'password' 
-                            ? 'border-cyan-400/50 shadow-lg shadow-cyan-400/10' 
-                            : 'border-slate-600/30'
+                            ? 'border-cyan-400/70 shadow-2xl shadow-cyan-400/20 bg-slate-800/50' 
+                            : 'border-slate-600/30 bg-slate-800/30'
                         }`}
                         placeholder=" Enter your password"
                       />
@@ -150,37 +147,14 @@ function SignUpPage() {
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-500 hover:text-cyan-400 transition-colors duration-300"
+                        className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-500 hover:text-cyan-400 transition-all duration-300 z-20 hover:scale-110"
                       >
                         {showPassword ? <EyeOffIcon className="w-5 h-5" /> : <EyeIcon className="w-5 h-5" />}
                       </button>
                     </div>
 
-                    {/* Simplified Password Strength Indicator */}
-                    {formData.password && (
-                      <div className="mt-3 space-y-2">
-                        <div className="flex justify-between text-xs text-slate-400">
-                          <span>Password strength</span>
-                          <span className={passwordStrength >= 75 ? "text-green-400" : passwordStrength >= 50 ? "text-yellow-400" : "text-orange-400"}>
-                            {passwordStrength >= 75 ? "Strong" : passwordStrength >= 50 ? "Good" : "Weak"}
-                          </span>
-                        </div>
-                        <div className="w-full bg-slate-700/50 rounded-full h-2">
-                          <div 
-                            className={`h-2 rounded-full transition-all duration-500 ${
-                              passwordStrength >= 75 ? "bg-green-400" : passwordStrength >= 50 ? "bg-yellow-400" : "bg-orange-400"
-                            }`}
-                            style={{ width: `${passwordStrength}%` }}
-                          ></div>
-                        </div>
-                        <div className="text-xs text-slate-500">
-                          {formData.password.length < 6 ? "At least 6 characters recommended" : "Looks good!"}
-                        </div>
-                      </div>
-                    )}
+                    
                   </div>
-
-                  
 
                   {/* SUBMIT BUTTON */}
                   <button 
@@ -209,15 +183,11 @@ function SignUpPage() {
                   </button>
                 </form>
 
-               <div className="mt-8 pt-4 pb-4 text-center">
-  <p className="text-slate-400">
-    Already have an account?{" "}
-    <Link to="/login" className="auth-link  inline-flex items-center gap-1">
-      Sign in here
-      <span className="group-hover:translate-x-1 transition-transform duration-300"> →</span>
-    </Link>
-  </p>
-</div>
+                <div className="mt-6 text-center">
+                  <Link to="/login" className="auth-link">
+                    Already have an account? Sign in
+                  </Link>
+                </div>
               </div>
             </div>
 
