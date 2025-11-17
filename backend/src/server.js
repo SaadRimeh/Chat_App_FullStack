@@ -14,7 +14,8 @@ const app = express();
 const __dirname = path.resolve();
 const PORT = process.env.PORT || 3000;
 
-app.use(express.json());
+app.use(express.json({ limit: "30mb" }));
+app.use(express.urlencoded({ limit: "30mb", extended: true }));
 
 // Configure CORS for development and production
 const clientOrigin = process.env.CLIENT_URL || 'http://localhost:5173';
