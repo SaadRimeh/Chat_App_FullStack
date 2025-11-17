@@ -74,6 +74,10 @@ const newMessage = new Message({
 await newMessage.save();
 
 //todo: send message to receiver if online using socket.io  
+ const receiverSocketId = getReceiverSocketId(receiverId);
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("newMessage", newMessage);
+    }
 
 
 res.status(201).json(newMessage);
