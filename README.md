@@ -1,86 +1,199 @@
-Gamza — Chat App (Full Stack)
+# **Gamza — Full-Stack Chat Application**
 
-A simple full-stack chat application (React + Express + MongoDB) with real-time messaging via Socket.IO.
+Gamza is a modern real-time chat application built with **React**, **Express**, **MongoDB**, and **Socket.IO**.
+It features secure authentication, real-time messaging, and a clean architecture optimized for both development and production.
 
-Overview
-- Frontend: React + Vite (in `/frontend`)
-- Backend: Express + Mongoose + Socket.IO (in `/backend`)
-- Realtime: Socket.IO authenticates using an HTTP-only `jwt` cookie set by the backend
+---
 
-Requirements
-- Node.js >= 20.0.0
-- npm
-- MongoDB (Atlas or local)
+## 🚀 **Tech Stack**
 
-Repository layout
-- `backend/` — Express API, Socket.IO server, authentication, Mongoose models
-- `frontend/` — React app (Vite)
+### **Frontend**
 
-Environment variables
-Create a `.env` file in `backend/` or set these in your environment:
+* React + Vite
+* Component-based structure
+* Located in `frontend/`
 
-- `MONGO_URL` — MongoDB connection string
-- `JWT_SECRET` — secret used to sign JWTs (required)
-- `PORT` — backend port (default 3000)
-- `NODE_ENV` — `development` or `production`
-- `CLIENT_URL` — frontend origin used by CORS and Socket.IO (dev default `http://localhost:5173`)
+### **Backend**
 
-Cookie & Socket notes
-- The app uses an HTTP-only cookie named `jwt` for authentication. The Socket.IO server reads this cookie from the socket handshake and verifies it. For sockets to authenticate, the browser must send this cookie with the initial handshake.
-- Recommended cookie behavior:
-  - Development: `sameSite='lax'`, `secure=false` (allows the cookie to be sent from Vite dev server)
-  - Production: `sameSite='none'`, `secure=true` (required for cross-site cookies over HTTPS)
+* Express.js
+* Mongoose (MongoDB ODM)
+* Socket.IO for real-time messaging
+* Located in `backend/`
 
-Local development (PowerShell)
-1) Install dependencies
-```powershell
-npm install --prefix backend
-npm install --prefix frontend
+### **Real-Time Communication**
+
+* Socket.IO server with JWT authentication
+* Uses an HTTP-only cookie (`jwt`)
+* Browser automatically includes the cookie during the WebSocket handshake
+
+---
+
+## 📦 **Project Structure**
+
+```
+/backend   → Express API, authentication, Socket.IO server, Mongoose models
+/frontend  → React app (Vite)
 ```
 
-2) Add `backend/.env` (example)
+---
+
+## 🔧 **Requirements**
+
+* Node.js v20+
+* npm
+* MongoDB (Atlas or local)
+
+---
+
+## 🔐 **Environment Variables**
+
+Create a `.env` file inside `backend/`:
+
 ```
-MONGO_URL=mongodb+srv://<user>:<pass>@cluster0.mongodb.net/mydb
-JWT_SECRET=your_secret_here
+MONGO_URL=your_mongodb_connection_string
+JWT_SECRET=your_secret_key
 PORT=3000
 NODE_ENV=development
 CLIENT_URL=http://localhost:5173
 ```
 
-3) Start backend and frontend (two terminals)
-```powershell
-# terminal 1 — backend
-$env:NODE_ENV='development'; $env:CLIENT_URL='http://localhost:5173'; npm run start --prefix backend
+---
 
-# terminal 2 — frontend
+## 🍪 **Cookie Configuration**
+
+Gamza uses a secure HTTP-only cookie for authentication.
+
+### **Development**
+
+* `sameSite: "lax"`
+* `secure: false`
+* Works with the Vite dev server
+
+### **Production**
+
+* `sameSite: "none"`
+* `secure: true`
+* Required for cross-site cookies over HTTPS
+
+---
+
+## 🛠️ **Local Development Guide (PowerShell)**
+
+### **1. Install dependencies**
+
+```powershell
+npm install --prefix backend
+npm install --prefix frontend
+```
+
+### **2. Create backend/.env**
+
+(Use the example above)
+
+### **3. Start both servers**
+
+#### **Backend**
+
+```powershell
+$env:NODE_ENV='development';
+$env:CLIENT_URL='http://localhost:5173';
+npm run start --prefix backend
+```
+
+#### **Frontend**
+
+```powershell
 npm run dev --prefix frontend
 ```
 
-API Overview
-- Auth: `/api/auth/v1/*` — signup, login, logout, profile update
-- Messages: `/api/messages/v1/*` — get contacts, get chats, get messages, send message
+---
 
-Real-time messaging (how it works)
-- Socket server setup: `backend/src/lib/socket.js` creates an HTTP server and a Socket.IO server. It uses `socketAuthMiddleware` to verify the `jwt` token on each connection.
-- Client connection: frontend connects with `io(BASE_URL, { withCredentials: true })` so the browser sends cookies with the socket handshake. Socket events used in the repo:
-  - `getOnlineUsers` — server emits list of online user ids
-  - `newMessage` — server emits a new message to the receiver's socket id
-- Sending messages: REST endpoint `POST /api/messages/v1/send/:id` saves a message and then, if the receiver is online, the server emits `newMessage` to the receiver socket.
+## 📡 **API Endpoints**
 
-Troubleshooting (real-time and auth)
-- If messages are not arriving in real time, check:
-  - Is the socket connection established? In the browser console look for any socket errors and inspect the `Network` tab for the `/socket.io/` handshake request — confirm the `cookie` header includes the `jwt` cookie.
-  - Server logs: `backend` prints socket auth errors (e.g. `Socket connection rejected: ...`).
-  - Cookie settings: ensure `sameSite` and `secure` settings allow the cookie to be sent from your frontend origin. In development, set `CLIENT_URL` to `http://localhost:5173` and cookie `sameSite` to `lax` in the backend.
-  - Confirm `JWT_SECRET` matches between server and how token was generated.
+### **Auth — `/api/auth/v1/*`**
 
-Quick checks
-- Browser devtools → Application → Cookies: inspect `localhost:3000` cookies; confirm `jwt` exists after login/signup.
-- Network → find `/socket.io/` request and check Request Headers → `cookie` should contain `jwt=...`.
+* Signup
+* Login
+* Logout
+* Update profile
 
-Optional improvements I can make
-- Add `backend/.env.example` to the repo
-- Add a root `dev` script to start both frontend/backend concurrently
-- Add more logging around socket connects/disconnects and message emits
+### **Messages — `/api/messages/v1/*`**
 
-If you want, I can also update the backend cookie settings (`backend/src/lib/utils.js`) so it sets `sameSite` and `secure` based on `NODE_ENV` (recommended). Want me to make that change now?
+* Get contacts
+* Get chats
+* Get messages
+* Send a message
+
+---
+
+## ⚡ **How Real-Time Messaging Works**
+
+### **Socket Server**
+
+* Implemented in `backend/src/lib/socket.js`
+* Uses `socketAuthMiddleware` to validate JWT cookies during connection
+
+### **Client Socket Setup**
+
+```js
+io(BASE_URL, { withCredentials: true });
+```
+
+### **Socket Events**
+
+* `getOnlineUsers` — broadcast list of online users
+* `newMessage` — real-time delivery of messages
+
+### **Message Flow**
+
+1. Client sends message via REST:
+   `POST /api/messages/v1/send/:id`
+2. Backend saves it to MongoDB
+3. If the receiver is online → server emits `newMessage`
+
+---
+
+## 🧪 **Troubleshooting: Auth & Real-Time**
+
+### **1. Check WebSocket Handshake**
+
+DevTools → Network → `/socket.io/`
+
+* Ensure the **cookie header includes `jwt`**
+
+### **2. Check Backend Logs**
+
+Look for socket auth errors (invalid token, missing cookie, etc.).
+
+### **3. Validate Cookie Settings**
+
+* Dev: `sameSite="lax"`, `secure=false`
+* Prod: `sameSite="none"`, `secure=true`
+
+### **4. Check JWT Secret**
+
+Ensure `JWT_SECRET` matches the token signer.
+
+---
+
+## ✔️ **Quick Debug Checklist**
+
+* `jwt` cookie exists (DevTools → Application → Cookies)
+* `/socket.io/` request includes cookie
+* No socket auth errors in backend logs
+* `CLIENT_URL` correct in `.env`
+
+---
+
+## 🔧 **Optional Improvements**
+
+I can help you add:
+
+* `backend/.env.example`
+* Root `dev` script to run frontend + backend together
+* Automatic cookie setup based on `NODE_ENV`
+* More logging for socket connections
+
+
+---
+
